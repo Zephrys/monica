@@ -19,14 +19,15 @@ Options:
 
 from docopt import docopt
 from config import config
+from config import configure
 from tabulate import tabulate
 import random
 
 __version__ = '0.0.2'
-headers = {'Accept' : 'application/json', 'user_key': config.api_key, 'User-Agent': 'curl/7.35.0'}
+headers = {'Accept' : 'application/json', 'user_key': config['api_key'], 'User-Agent': 'curl/7.35.0'}
 
 def surprise():
-  url = 'https://developers.zomato.com/api/v2.1/geocode?lat=%s&lon=%s' %(config.lat, config.lon)
+  url = 'https://developers.zomato.com/api/v2.1/geocode?lat=%s&lon=%s' %(config['lat'], config['lon'])
   try:
     response =requests.get(url, headers = headers)
   except:
@@ -39,12 +40,14 @@ def surprise():
         print 'Sorry nothing in your budget :('
       key = random.choice(restaurants.keys())
       budget = restaurant[key]['average_cost_for_two']
-      if float(budget)/2 <= config.budget:
+      if float(budget)/2 <= config['budget']:
         restaurant = restaurant[key]
         break
       else:
         restaurants.pop(key, None)
     table = [[restaurant["id"] , restaurant["name"], restaurant["curency"]
+    if not restaurant.has_key("phone_numbers"):
+      restaurant["phone_numbers"] = "Not Found"
     + " " + str(float(restaurant['average_cost_for_two'])/2)] ,restaurant["phone_numbers"], restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50]]
     print tabulate(table, headers=["ID", "Name", "Budget", "Contact", "Rating", "Address"])
   else:
@@ -84,6 +87,8 @@ def cuisine(cuisine):
         restaurants = data["restaurants"]
         restaurants_list = []
         for restaurant in restaurants:
+          if not restaurant.has_key("phone_numbers"):
+            restaurant["phone_numbers"] = "Not Found"
           restaurants_list.append(restaurant["id"] , restaurant["name"], restaurant["curency"]
     + " " + str(float(restaurant['average_cost_for_two'])/2)] ,restaurant["phone_numbers"], restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50])
         print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Contact", "Rating", "Address"])
@@ -120,6 +125,6 @@ def budget():
   pass
 
 def config():
-  config.configure()
+  configure()
 
 def main():
