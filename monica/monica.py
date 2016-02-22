@@ -26,6 +26,21 @@ import random
 __version__ = '0.0.2'
 headers = {'Accept' : 'application/json', 'user_key': config['api_key'], 'User-Agent': 'curl/7.35.0'}
 
+
+def url_shorten(longurl):
+  url = 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyA76APOb611GHyJS_7ly_l-0Btvr798Lc'
+  headers = {'Content-Type' : 'application/json'}
+  try:
+    response = requests.post(url, headers = headers, data = {'longUrl': longurl})
+    if response.status_code == 200:
+      data = response.json()
+      return data['id']
+    else:
+      return longurl
+  except:
+    return longurl
+
+
 def surprise():
   url = 'https://developers.zomato.com/api/v2.1/geocode?lat=%s&lon=%s' %(config['lat'], config['lon'])
   try:
