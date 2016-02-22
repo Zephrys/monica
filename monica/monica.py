@@ -10,6 +10,7 @@ Usage:
   monica budget <budget>
   monica cuisine (<id>| list)
   monica configure
+  monica (-h |--help)
 
 Options:
   -h --help   Show this screen.
