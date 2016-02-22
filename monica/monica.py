@@ -63,8 +63,8 @@ def surprise():
     table = [[restaurant["id"] , restaurant["name"], restaurant["curency"]
     if not restaurant.has_key("phone_numbers"):
       restaurant["phone_numbers"] = "Not Found"
-    + " " + str(float(restaurant['average_cost_for_two'])/2)] ,restaurant["phone_numbers"], restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50]]
-    print tabulate(table, headers=["ID", "Name", "Budget", "Contact", "Rating", "Address"])
+    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50]]
+    print tabulate(table, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
   else:
     print 'Something went wrong!'
 
@@ -105,8 +105,8 @@ def cuisine(cuisine):
           if not restaurant.has_key("phone_numbers"):
             restaurant["phone_numbers"] = "Not Found"
           restaurants_list.append(restaurant["id"] , restaurant["name"], restaurant["curency"]
-    + " " + str(float(restaurant['average_cost_for_two'])/2)] ,restaurant["phone_numbers"], restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50])
-        print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Contact", "Rating", "Address"])
+    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:50])
+        print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
     else:
       print "Something went wrong!"
 
