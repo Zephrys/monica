@@ -4,12 +4,12 @@ monica helps you order food from the terminal
 
 Usage:
   monica surprise
-  monica <restaurant-name>
-  monica search <restaurant name>
-  monica reviews
+  monica restaurant <restaurant-id>
+  monica search <restaurant-name>
+  monica reviews <resaurant-id>
   monica budget <per-person-cost>
   monica cuisine (<name> | list)
-  monica config
+  monica configure
 
 Options:
   -h --help     Show this screen.
@@ -139,7 +139,31 @@ def reviews(id):
 def budget():
   pass
 
-def config():
-  configure()
 
 def main():
+  '''monica helps you order food from the timeline'''
+  arguments = docopt(__doc__, version=__version__)
+
+  if arguments['configure']:
+    configure()
+  elif arguments['surprise']:
+    surprise()
+  elif arguments['reviews']:
+    reviews(arguments['reviews']['resaurant-id'])
+  elif arguments['search']:
+    search(arguments['search']['restaurant-name'])
+  elif arguments['budget']:
+    try:
+      budget = arguments['budget']['per-person-cost']
+      budget = float(budget)
+    except:
+      print 'Budget should be a number!'
+  elif arguments['restaurant']:
+    restaurant(['restaurant']['restaurant-name'])
+  else:
+    print (__doc__)
+
+
+
+if __name__ == '__main__':
+  main()
