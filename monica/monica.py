@@ -8,6 +8,8 @@ Usage:
   monica search <restaurant name>
   monica trending
   monica budget <per-person-cost>
+  monica cuisine (chinese | indian | ..)
+  monica config
 
 Options:
   -h --help     Show this screen.
@@ -19,3 +21,26 @@ from docopt import docopt
 
 __version__ = '0.0.2'
 
+
+def surprise():
+  pass
+
+def restaurant():
+  pass
+
+def cuisine():
+  pass
+
+def search():
+  pass
+
+def trending():
+  pass
+
+def budget():
+  pass
+
+def config():
+  pass
+
+def main():
