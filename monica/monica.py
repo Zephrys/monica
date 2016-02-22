@@ -12,11 +12,11 @@ Usage:
   monica configure
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help   Show this screen.
+  --version   Show version.
 
 """
-
+import requests
 from docopt import docopt
 from config import config
 from config import configure
@@ -40,7 +40,6 @@ def url_shorten(longurl):
   except:
     return longurl
 
-
 def surprise():
   url = 'https://developers.zomato.com/api/v2.1/geocode?lat=%s&lon=%s' %(config['lat'], config['lon'])
   try:
@@ -63,15 +62,10 @@ def surprise():
     table = [[restaurant["id"] , restaurant["name"], restaurant["curency"]
     if not restaurant.has_key("phone_numbers"):
       restaurant["phone_numbers"] = "Not Found"
-    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40]]
+    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["menu_url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40]]
     print tabulate(table, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
   else:
     print 'Something went wrong!'
-
-
-
-def restaurant():
-  pass
 
 def cuisine(cuisine):
   if cuisine == 'list':
@@ -105,13 +99,34 @@ def cuisine(cuisine):
           if not restaurant.has_key("phone_numbers"):
             restaurant["phone_numbers"] = "Not Found"
           restaurants_list.append(restaurant["id"] , restaurant["name"], restaurant["curency"]
-    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40])
+    + " " + str(float(restaurant['average_cost_for_two'])/2)] , url_shorten(restaurant["menu_url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40])
         print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
     else:
       print "Something went wrong!"
 
-def search():
-  pass
+def restaurant(resid):
+	try:
+		url = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + str(resid)
+		r = requests.get(url,headers=headers)
+		print r.status_code
+		restaurants = []
+		if r.status_code != 200:
+			print r.status_code
+			print "Something went wrong!"
+			return
+		res = r.json()
+		rest = {}
+		rest['id'] = res['id']
+		rest['name'] = res['name']
+		rest['budget'] = float(res['average_cost_for_two'])/2
+		rest['menu'] = url_shorten(res['menu_url'])
+		rest['rating'] = res['user_rating']['aggregate_rating']
+		rest['address'] = res['location']['address'][:40]
+		restaurants.append(rest)
+		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+	except:
+		print "Something went wrong!"
+		return
 
 def reviews(id):
   url = "https://developers.zomato.com/api/v2.1/reviews?res_id=%s&count=5"%(id)
@@ -135,10 +150,58 @@ def reviews(id):
   else:
     print 'Something went wrong'
 
+def search(name):
+	try:
+		url = 'https://developers.zomato.com/api/v2.1/search?q=' + str(name) + '&count=10&lat=' + str(config['lat']) + '&lon=' + str(config['lon'])
+		r = requests.get(url,headers=headers)
+		restaurants = []
+		if r.status_code != 200:
+			print "Oops! Something went wrong! \nA lot many restaurants wait for you!!"
+			return
+		if len(r.json()['restaurants'])	<= 0:
+			print "Oops! Something went wrong! \nA lot many restaurants wait for you!!"
+			return
+		for res in r.json()['restaurants']:
+			rest = {}
+			rest['id'] = res['restaurant']['id']
+			rest['name'] = res['restaurant']['name']
+			rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
+			rest['menu'] = url_shorten(res['restaurant']['menu_url'])
+			rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
+			rest['address'] = res['restaurant']['location']['address'][:40]
+			restaurants.append(rest)
+		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['Id', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+	except:
+		print "Something went wrong!"
+		return
 
-def budget():
-  pass
-
+def budget(max_budget):
+	try:
+		url = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=asc'
+		r = requests.get(url,headers=headers)
+		restaurants = []
+		if r.status_code != 200:
+			print "Oops! Something went wrong! \nA lot many restaurants wait for you!!"
+			return
+		if len(r.json()['restaurants'])	<= 0:
+			print "Oops! Something went wrong! \nA lot many restaurants wait for you!!"
+			return
+		for res in r.json()['restaurants']:
+			if 	float(res['restaurant']['average_cost_for_two'])/2 <= int(max_budget):
+				rest = {}
+				rest['id'] = res['restaurant']['id']
+				rest['name'] = res['restaurant']['name']
+				rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
+				rest['menu'] = url_shorten(res['restaurant']['menu_url'])
+				rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
+				rest['address'] = res['restaurant']['location']['address'][:40]
+				restaurants.append(rest)
+			else:
+				break
+		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['Id', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+	except:
+		print "Something went wrong!"
+		return
 
 def main():
   '''monica helps you order food from the timeline'''
