@@ -1,11 +1,9 @@
 import json
 import requests
-_ROOT = os.path.abspath(os.path.dirname(__file__))
+import os
+import sys
 
-try:
-	config = json.loads(open(os.path.join(_ROOT, "config.json"), "r"))
-except:
-	print 'No configuration file exists, run monica config'
+_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 def configure():
 	try:
@@ -23,17 +21,28 @@ def configure():
 		city_id = False
 		headers = {'Accept' : 'application/json', 'user_key': api_key, 'User-Agent': 'curl/7.35.0'}
 		try:
-			response = requests.get(url)
+			response = requests.get(url, headers = headers)
 			if response.status_code == 200:
 				data = response.json()
 				if data['status'] == 'success':
 					city_id = data['location_suggestions'][0]['id']
-			else if response.status_code == 403:
+			elif response.status_code == 403:
 				print 'Invalid API Key'
 		except:
 			print 'Something went wrong while parsing the city!'
+			sys.exit()
 		if city_id:
-			configuration = {"budget" : budget, "latitude": lat, "lon": lon, "api_key": api_key}
+			configuration = {"budget" : budget, "lat": lat, "lon": lon, "api_key": api_key, 'city_id': city_id}
 			configuration_file.write(json.dumps(configuration))
 		else:
 			print 'Your city isnt supported'
+			sys.exit()
+	except:
+		print "Something went wrong! Try Again?"
+		sys.exit()
+
+try:
+	config = json.loads(open(os.path.join(_ROOT, "config.json"), "r").read())
+except:
+	configure()
+	config = json.loads(open(os.path.join(_ROOT, "config.json"), "r").read())
