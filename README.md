@@ -6,3 +6,4 @@
 - Use search instead of geocode for surprise
 - Publish on PiP
 - Better Readme
+- Pretty Print
