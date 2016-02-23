@@ -109,9 +109,9 @@ def cuisine(cuisine):
       + " " + str(float(restaurant['average_cost_for_two'])/2) , restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["locality"]])
           print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Rating", "Locality"],tablefmt='fancy_grid')
       else:
-        print "Something went wrong!"
+        print "API Issues"
     except:
-      print 'Something went wrong!'
+      print 'Network Issues'
 
 def restaurant(resid):
   try:
@@ -119,7 +119,7 @@ def restaurant(resid):
     r = requests.get(url,headers=headers)
     restaurants = []
     if r.status_code != 200:
-      print "Something went wrong!"
+      print "API Issues"
       return
     res = r.json()
     rest = {}
@@ -133,7 +133,7 @@ def restaurant(resid):
     print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
     print "Find the menu at:\t", rest['menu']
   except:
-    print "Something went wrong!"
+    print "Network Issues!"
     return
 
 def reviews(id):
@@ -141,7 +141,8 @@ def reviews(id):
   try:
     response = requests.get(url, headers=headers)
   except:
-    print 'Something went wrong!'
+    print 'Network Issues!'
+    return
   if response.status_code == 200:
     data = response.json()
     count= data["reviews_count"]
@@ -156,7 +157,7 @@ def reviews(id):
         print review["review_time_friendly"]
         print "--------------"
   else:
-    print 'Something went wrong'
+    print 'Api Issues'
 
 def search(query):
   try:
@@ -164,10 +165,10 @@ def search(query):
     r = requests.get(url,headers=headers)
     restaurants = []
     if r.status_code != 200:
-      print "Something went wrong!!"
+      print "Api Issues"
       return
     if len(r.json()['restaurants']) <= 0:
-      print "Something went wrong!!"
+      print "Api Issues"
       return
     for res in r.json()['restaurants']:
       rest = {}
@@ -175,12 +176,11 @@ def search(query):
       rest['name'] = res['restaurant']['name']
       rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
       rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
-      rest['locality'] = res['restaurant']['locality']
+      rest['locality'] = res['restaurant']['location']['locality']
       restaurants.append(rest)
     print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
   except:
-    print "Something went wrong!"
-    return
+    print "Network Error!"
 
 def budget(max_budget):
   try:
@@ -190,10 +190,10 @@ def budget(max_budget):
     r2 = requests.get(url2, headers=headers)
     restaurants = []
     if r1.status_code != 200 or r2.status_code !=200:
-      print "Something went wrong!!"
+      print "API Issues"
       return
     if len(r1.json()['restaurants']) <= 0 and len(r2.json()['restaurants']) <= 0:
-      print "Something went wrong!!"
+      print "API Issues"
       return
     data = r1.json()['restaurants'] + r2.json()['restaurants']
     for res in data:
@@ -209,7 +209,7 @@ def budget(max_budget):
         continue
     print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants][:10], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
   except:
-    print "Something went wrong!"
+    print "Network Issues"
     return
 
 def main():
@@ -229,8 +229,6 @@ def main():
     reviews(arguments['<restaurant-id>'])
   elif arguments['search']:
     search(arguments['QUERY'])
-  elif arguments['search']:
-      search(arguments['<name>'])
   elif arguments['budget']:
     try:
       money = arguments['<budget>']
