@@ -5,7 +5,7 @@
 :fork_and_knife: monica is a command line chef that brings you tasty food
 
 ## Demo
-![]()
+![](http://i.imgur.com/D4iLyJw.gifv)
 
 ## Features
 
