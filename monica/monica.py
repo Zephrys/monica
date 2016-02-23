@@ -31,7 +31,7 @@ except:
 from tabulate import tabulate
 import random
 
-__version__ = '0.0.2'
+__version__ = '0.0.8'
 headers = {'Accept' : 'application/json', 'user_key': config['api_key'], 'User-Agent': 'curl/7.35.0'}
 
 
