@@ -10,10 +10,10 @@ if os.environ.get('USER', '') == 'vagrant':
 
 setup(
   name='monica',
-  version='0.0.2',
+  version='0.0.5',
   description='monica is a command line chef that brings you tasty food',
   long_description=open('README.rst').read(),
-  author='Gyanendra Mishra',
+  author='Zephrys',
   author_email='anomaly.the@gmail.com',
   license='MIT',
   keywords=['license', 'food', 'monica', 'command line', 'cli', 'zomato'],

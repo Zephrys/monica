@@ -1,8 +1,6 @@
 monica
 ======
 
-|PyPI version|
-
 |image1|
 
 🍴 monica is a command line chef that brings you tasty food
@@ -116,7 +114,6 @@ Open sourced under the **MIT License**
 .. _PIP: 
 .. _issue tracker: https://github.com/Zephrys/monica
 
-.. |PyPI version| image:: https://badge.fury.io/py/monica.svg
    :target: https://badge.fury.io/py/monica
 .. |image1| image:: http://i.imgur.com/mfJa6zi.jpg?1
 .. |image2| image:: http://i.imgur.com/D4iLyJw.gif?1
