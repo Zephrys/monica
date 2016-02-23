@@ -3,11 +3,14 @@ import requests
 import os
 import sys
 
-_ROOT = os.path.abspath(os.path.dirname(__file__))
+_ROOT = os.path.expanduser('~')
+
+if not os.path.exists(os.path.join(_ROOT, ".monica/")):
+	os.makedirs(os.path.join(_ROOT, ".monica/"))
 
 def configure():
 	try:
-		configuration_file = open(os.path.join(_ROOT, "config.json"), "w")
+		configuration_file = open(os.path.join(_ROOT, ".monica/config.json"), "w")
 		api_key = raw_input("What is your api_key?[672c3d5b9645db8dd7266626856cd015]") or '672c3d5b9645db8dd7266626856cd015'
 		budget = raw_input("What is your budget(per person/in your currency)?[100]") or 100
 		try:
@@ -42,7 +45,7 @@ def configure():
 		sys.exit()
 
 try:
-	config = json.loads(open(os.path.join(_ROOT, "config.json"), "r").read())
+	config = json.loads(open(os.path.join(_ROOT, ".monica/config.json"), "r").read())
 except:
 	configure()
-	config = json.loads(open(os.path.join(_ROOT, "config.json"), "r").read())
+	config = json.loads(open(os.path.join(_ROOT, ".monica/config.json"), "r").read())

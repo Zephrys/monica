@@ -1,14 +1,14 @@
 r"""
 
-monica helps you order food from the terminal
+monica is a command line chef that brings you tasty food
 
 Usage:
   monica surprise
   monica restaurant <restaurant-id>
   monica search <name>
-  monica reviews <id>
+  monica reviews <restaurant-id>
   monica budget <budget>
-  monica cuisine (<id>| list)
+  monica cuisine (<cuisine-id>| list)
   monica configure
   monica (-h |--help)
 
@@ -49,23 +49,23 @@ def url_shorten(longurl):
     return "Couldnt Shorten"
 
 def surprise():
-  url = 'https://developers.zomato.com/api/v2.1/geocode?lat=%s&lon=%s' %(config['lat'], config['lon'])
+  url = 'https://developers.zomato.com/api/v2.1/search?lat=%s&lon=%s&count=100' %(config['lat'], config['lon'])
   try:
     response =requests.get(url, headers = headers)
     if response.status_code == 200:
       data = response.json()
-      restaurants = data['nearby_restaurants']
+      restaurants = data['restaurants']
       while True:
-        if restaurants == {}:
+        if restaurants == []:
           print 'Sorry nothing in your budget :('
           return
-        key = random.choice(restaurants.keys())
-        budget = restaurants[key]['restaurant']['average_cost_for_two']
+        choice = random.choice(restaurants)
+        budget = choice['restaurant']['average_cost_for_two']
         if float(budget)/2 <= config['budget']:
-          restaurant = restaurants[key]['restaurant']
+          restaurant = choice['restaurant']
           break
         else:
-          restaurants.pop(key, None)
+          restaurants.remove(choice)
       table = [[restaurant["id"] , restaurant["name"], restaurant["currency"] + " " + str(float(restaurant['average_cost_for_two'])/2) , url_shorten(restaurant["menu_url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40] ]]
       print tabulate(table, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
     else:
@@ -220,11 +220,11 @@ def main():
     if arguments['list']:
       cuisine('list')
     else:
-      cuisine(arguments['<id>'])
+      cuisine(arguments['<cuisine-id>'])
   elif arguments['surprise']:
     surprise()
   elif arguments['reviews']:
-    reviews(arguments['<id>'])
+    reviews(arguments['<restaurant-id>'])
   elif arguments['search']:
     search(arguments['<name>'])
   elif arguments['search']:
