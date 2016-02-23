@@ -22,16 +22,15 @@ import requests
 from docopt import docopt
 import json
 from config import configure
-
 try:
   from config import config
 except:
   print 'No Configuration File Found'
-
+from config import flag
 from tabulate import tabulate
 import random
 
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 headers = {'Accept' : 'application/json', 'user_key': config['api_key'], 'User-Agent': 'curl/7.35.0'}
 
 
@@ -216,7 +215,7 @@ def main():
   '''monica helps you order food from the timeline'''
   arguments = docopt(__doc__, version=__version__)
 
-  if arguments['configure']:
+  if arguments['configure'] and flag:
     configure()
   if arguments['cuisine']:
     if arguments['list']:

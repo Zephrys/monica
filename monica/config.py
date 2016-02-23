@@ -45,7 +45,10 @@ def configure():
 		sys.exit()
 
 try:
+	flag = True
 	config = json.loads(open(os.path.join(_ROOT, ".monica/config.json"), "r").read())
 except:
+	print "no config file found"
+	flag = False
 	configure()
 	config = json.loads(open(os.path.join(_ROOT, ".monica/config.json"), "r").read())
