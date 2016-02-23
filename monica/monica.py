@@ -19,10 +19,8 @@ Options:
 """
 import requests
 from docopt import docopt
-import sys
 import json
 from config import configure
-from pprint import pprint
 
 try:
   from config import config
