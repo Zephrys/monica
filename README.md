@@ -1,5 +1,5 @@
 # monica
-:fork_and_knife: order food from the terminal
+:fork_and_knife: monica is a command line chef that brings you tasty food
 
 
 ## todo

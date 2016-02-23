@@ -1,4 +1,4 @@
-Monica
+monica
 =====
 
-Monica helps you order food from the commandline.
+monica is a command line chef that brings you tasty food.

@@ -11,7 +11,7 @@ if os.environ.get('USER', '') == 'vagrant':
 setup(
   name='monica',
   version='0.0.2',
-  description='monica helps you order food from the commandline',
+  description='monica is a command line chef that brings you tasty food',
   long_description=open('README.rst').read(),
   author='Gyanendra Mishra',
   author_email='anomaly.the@gmail.com',
