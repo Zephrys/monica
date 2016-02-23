@@ -1,16 +1,16 @@
 r"""
-
 monica is a command line chef that brings you tasty food
 
 Usage:
   monica surprise
   monica restaurant <restaurant-id>
-  monica search <name>
+  monica search [QUERY ...]
   monica reviews <restaurant-id>
   monica budget <budget>
   monica cuisine (<cuisine-id>| list)
   monica configure
   monica (-h |--help)
+  monica
 
 Options:
   -h --help   Show this screen.
@@ -114,26 +114,26 @@ def cuisine(cuisine):
     except:
       print 'Something went wrong!'
 def restaurant(resid):
-	try:
-		url = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + str(resid)
-		r = requests.get(url,headers=headers)
-		restaurants = []
-		if r.status_code != 200:
-			print "Something went wrong!"
-			return
-		res = r.json()
-		rest = {}
-		rest['id'] = res['id']
-		rest['name'] = res['name']
-		rest['budget'] = float(res['average_cost_for_two'])/2
-		rest['menu'] = url_shorten(res['menu_url'])
-		rest['rating'] = res['user_rating']['aggregate_rating']
-		rest['address'] = res['location']['address'][:40]
-		restaurants.append(rest)
-		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
-	except:
-		print "Something went wrong!"
-		return
+  try:
+    url = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + str(resid)
+    r = requests.get(url,headers=headers)
+    restaurants = []
+    if r.status_code != 200:
+      print "Something went wrong!"
+      return
+    res = r.json()
+    rest = {}
+    rest['id'] = res['id']
+    rest['name'] = res['name']
+    rest['budget'] = float(res['average_cost_for_two'])/2
+    rest['menu'] = url_shorten(res['menu_url'])
+    rest['rating'] = res['user_rating']['aggregate_rating']
+    rest['address'] = res['location']['address'][:40]
+    restaurants.append(rest)
+    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+  except:
+    print "Something went wrong!"
+    return
 
 def reviews(id):
   url = "https://developers.zomato.com/api/v2.1/reviews?res_id=%s&count=5"%(id)
@@ -157,58 +157,58 @@ def reviews(id):
   else:
     print 'Something went wrong'
 
-def search(name):
-	try:
-		url = 'https://developers.zomato.com/api/v2.1/search?q=' + str(name) + '&count=10&lat=' + str(config['lat']) + '&lon=' + str(config['lon'])
-		r = requests.get(url,headers=headers)
-		restaurants = []
-		if r.status_code != 200:
-			print "Something went wrong!!"
-			return
-		if len(r.json()['restaurants'])	<= 0:
-			print "Something went wrong!!"
-			return
-		for res in r.json()['restaurants']:
-			rest = {}
-			rest['id'] = res['restaurant']['id']
-			rest['name'] = res['restaurant']['name']
-			rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
-			rest['menu'] = url_shorten(res['restaurant']['menu_url'])
-			rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
-			rest['address'] = res['restaurant']['location']['address'][:40]
-			restaurants.append(rest)
-		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
-	except:
-		print "Something went wrong!"
-		return
+def search(query):
+  try:
+    url = 'https://developers.zomato.com/api/v2.1/search?q=' + str(" ".join(query)) + '&count=10&lat=' + str(config['lat']) + '&lon=' + str(config['lon'])
+    r = requests.get(url,headers=headers)
+    restaurants = []
+    if r.status_code != 200:
+      print "Something went wrong!!"
+      return
+    if len(r.json()['restaurants']) <= 0:
+      print "Something went wrong!!"
+      return
+    for res in r.json()['restaurants']:
+      rest = {}
+      rest['id'] = res['restaurant']['id']
+      rest['name'] = res['restaurant']['name']
+      rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
+      rest['menu'] = url_shorten(res['restaurant']['menu_url'])
+      rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
+      rest['address'] = res['restaurant']['location']['address'][:40]
+      restaurants.append(rest)
+    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+  except:
+    print "Something went wrong!"
+    return
 
 def budget(max_budget):
-	try:
-		url = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=asc'
-		r = requests.get(url,headers=headers)
-		restaurants = []
-		if r.status_code != 200:
-			print "Something went wrong!!"
-			return
-		if len(r.json()['restaurants'])	<= 0:
-			print "Something went wrong!!"
-			return
-		for res in r.json()['restaurants']:
-			if 	float(res['restaurant']['average_cost_for_two'])/2 <= int(max_budget):
-				rest = {}
-				rest['id'] = res['restaurant']['id']
-				rest['name'] = res['restaurant']['name']
-				rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
-				rest['menu'] = url_shorten(res['restaurant']['menu_url'])
-				rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
-				rest['address'] = res['restaurant']['location']['address'][:40]
-				restaurants.append(rest)
-			else:
-				break
-		print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
-	except:
-		print "Something went wrong!"
-		return
+  try:
+    url = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=asc'
+    r = requests.get(url,headers=headers)
+    restaurants = []
+    if r.status_code != 200:
+      print "Something went wrong!!"
+      return
+    if len(r.json()['restaurants']) <= 0:
+      print "Something went wrong!!"
+      return
+    for res in r.json()['restaurants']:
+      if  float(res['restaurant']['average_cost_for_two'])/2 <= int(max_budget):
+        rest = {}
+        rest['id'] = res['restaurant']['id']
+        rest['name'] = res['restaurant']['name']
+        rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
+        rest['menu'] = url_shorten(res['restaurant']['menu_url'])
+        rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
+        rest['address'] = res['restaurant']['location']['address'][:40]
+        restaurants.append(rest)
+      else:
+        break
+    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+  except:
+    print "Something went wrong!"
+    return
 
 def main():
   '''monica helps you order food from the timeline'''
@@ -226,7 +226,7 @@ def main():
   elif arguments['reviews']:
     reviews(arguments['<restaurant-id>'])
   elif arguments['search']:
-    search(arguments['<name>'])
+    search(arguments['QUERY'])
   elif arguments['search']:
       search(arguments['<name>'])
   elif arguments['budget']:
