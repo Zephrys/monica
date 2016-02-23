@@ -17,6 +17,7 @@ Options:
   --version   Show version.
 
 """
+
 import requests
 from docopt import docopt
 import json
@@ -65,7 +66,7 @@ def surprise():
         else:
           restaurants.remove(choice)
       table = [[restaurant["id"] , restaurant["name"], restaurant["currency"] + " " + str(float(restaurant['average_cost_for_two'])/2) , restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["locality"]]]
-      print tabulate(table, headers=["ID", "Name", "Budget", "Rating", "Locality"])
+      print tabulate(table, headers=["ID", "Name", "Budget", "Rating", "Locality"], tablefmt='fancy_grid')
     else:
       print 'Api Issues!'
   except:
@@ -84,7 +85,7 @@ def cuisine(cuisine):
         for cuisine in cuisines:
           cuisine = cuisine['cuisine']
           cuisine_list.append([cuisine["cuisine_id"], cuisine["cuisine_name"]])
-        print tabulate(cuisine_list, headers=["ID", "Cuisine Name"])
+        print tabulate(cuisine_list, headers=["ID", "Cuisine Name"],tablefmt='fancy_grid')
       else:
         print 'Api Error'
     except:
@@ -106,7 +107,7 @@ def cuisine(cuisine):
             restaurant = restaurant['restaurant']
             restaurants_list.append([restaurant["id"] , restaurant["name"], restaurant["currency"]
       + " " + str(float(restaurant['average_cost_for_two'])/2) , restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["locality"]])
-          print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Rating", "Locality"])
+          print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Rating", "Locality"],tablefmt='fancy_grid')
       else:
         print "Something went wrong!"
     except:
@@ -129,7 +130,7 @@ def restaurant(resid):
     rest['rating'] = res['user_rating']['aggregate_rating']
     rest['locality'] = res['location']['locality']
     restaurants.append(rest)
-    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
     print "Find the menu at:\t", rest['menu']
   except:
     print "Something went wrong!"
@@ -176,7 +177,7 @@ def search(query):
       rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
       rest['locality'] = res['restaurant']['locality']
       restaurants.append(rest)
-    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
   except:
     print "Something went wrong!"
     return
@@ -203,7 +204,7 @@ def budget(max_budget):
         restaurants.append(rest)
       else:
         break
-    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
   except:
     print "Something went wrong!"
     return
