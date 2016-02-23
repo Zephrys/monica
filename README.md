@@ -1,9 +1,9 @@
 # monica
 
 ![](http://i.imgur.com/mfJa6zi.jpg?1)
+
 :fork_and_knife: monica is a command line chef that brings you tasty food
 
-<<<<<<< HEAD
 ## Demo
 ![]()
 
@@ -15,7 +15,7 @@
 
 ## Installation
 
-### 1: [PiP]()
+### 1: [PIP]()
 
 ```bash
 $ pip install monica
