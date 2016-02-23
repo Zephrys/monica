@@ -64,8 +64,8 @@ def surprise():
           break
         else:
           restaurants.remove(choice)
-      table = [[restaurant["id"] , restaurant["name"], restaurant["currency"] + " " + str(float(restaurant['average_cost_for_two'])/2) , url_shorten(restaurant["menu_url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40] ]]
-      print tabulate(table, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
+      table = [[restaurant["id"] , restaurant["name"], restaurant["currency"] + " " + str(float(restaurant['average_cost_for_two'])/2) , restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["locality"]]]
+      print tabulate(table, headers=["ID", "Name", "Budget", "Rating", "Locality"])
     else:
       print 'Api Issues!'
   except:
@@ -105,12 +105,13 @@ def cuisine(cuisine):
           for restaurant in restaurants:
             restaurant = restaurant['restaurant']
             restaurants_list.append([restaurant["id"] , restaurant["name"], restaurant["currency"]
-      + " " + str(float(restaurant['average_cost_for_two'])/2) , url_shorten(restaurant["menu_url"]), restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["address"][:40]])
-          print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Menu", "Rating", "Address"])
+      + " " + str(float(restaurant['average_cost_for_two'])/2) , restaurant["user_rating"]["aggregate_rating"], restaurant["location"]["locality"]])
+          print tabulate(restaurants_list, headers=["ID", "Name", "Budget", "Rating", "Locality"])
       else:
         print "Something went wrong!"
     except:
       print 'Something went wrong!'
+
 def restaurant(resid):
   try:
     url = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + str(resid)
@@ -126,9 +127,10 @@ def restaurant(resid):
     rest['budget'] = float(res['average_cost_for_two'])/2
     rest['menu'] = url_shorten(res['menu_url'])
     rest['rating'] = res['user_rating']['aggregate_rating']
-    rest['address'] = res['location']['address'][:40]
+    rest['locality'] = res['location']['locality']
     restaurants.append(rest)
-    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
+    print "Find the menu at:\t", rest['menu']
   except:
     print "Something went wrong!"
     return
@@ -171,11 +173,10 @@ def search(query):
       rest['id'] = res['restaurant']['id']
       rest['name'] = res['restaurant']['name']
       rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
-      rest['menu'] = url_shorten(res['restaurant']['menu_url'])
       rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
-      rest['address'] = res['restaurant']['location']['address'][:40]
+      rest['locality'] = res['restaurant']['locality']
       restaurants.append(rest)
-    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
   except:
     print "Something went wrong!"
     return
@@ -197,13 +198,12 @@ def budget(max_budget):
         rest['id'] = res['restaurant']['id']
         rest['name'] = res['restaurant']['name']
         rest['budget'] = res['restaurant']['currency'] + ' ' + str(float(res['restaurant']['average_cost_for_two'])/2)
-        rest['menu'] = url_shorten(res['restaurant']['menu_url'])
         rest['rating'] = res['restaurant']['user_rating']['aggregate_rating']
-        rest['address'] = res['restaurant']['location']['address'][:40]
+        rest['locality'] = res['restaurant']['location']['locality']
         restaurants.append(rest)
       else:
         break
-    print tabulate([[i['id'], i['name'], i['budget'], i['menu'], i['rating'], i['address']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Menu', 'Rating', 'Address'])
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'])
   except:
     print "Something went wrong!"
     return
