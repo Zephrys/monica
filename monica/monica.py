@@ -184,16 +184,19 @@ def search(query):
 
 def budget(max_budget):
   try:
-    url = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=asc'
-    r = requests.get(url,headers=headers)
+    url1 = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=desc'
+    url2 = 'https://developers.zomato.com/api/v2.1/search?q=&count=100&lat=' + str(config['lat']) + '&lon=' + str(config['lon']) +' &sort=cost&order=asc'
+    r1 = requests.get(url1,headers=headers)
+    r2 = requests.get(url2, headers=headers)
     restaurants = []
-    if r.status_code != 200:
+    if r1.status_code != 200 or r2.status_code !=200:
       print "Something went wrong!!"
       return
-    if len(r.json()['restaurants']) <= 0:
+    if len(r1.json()['restaurants']) <= 0 and len(r2.json()['restaurants']) <= 0:
       print "Something went wrong!!"
       return
-    for res in r.json()['restaurants']:
+    data = r1.json()['restaurants'] + r2.json()['restaurants']
+    for res in data:
       if  float(res['restaurant']['average_cost_for_two'])/2 <= int(max_budget):
         rest = {}
         rest['id'] = res['restaurant']['id']
@@ -203,8 +206,8 @@ def budget(max_budget):
         rest['locality'] = res['restaurant']['location']['locality']
         restaurants.append(rest)
       else:
-        break
-    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
+        continue
+    print tabulate([[i['id'], i['name'], i['budget'], i['rating'], i['locality']] for i in restaurants][:10], headers=['ID', 'Name', 'Budget', 'Rating', 'Locality'],tablefmt='fancy_grid')
   except:
     print "Something went wrong!"
     return
