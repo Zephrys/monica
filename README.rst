@@ -1,14 +1,14 @@
 monica
 ======
 
-|image1|
+|image0|
 
 🍴 monica is a command line chef that brings you tasty food
 
 Demo
 ----
 
-|image2|
+|image1|
 
 Features
 --------
@@ -114,6 +114,5 @@ Open sourced under the **MIT License**
 .. _PIP: 
 .. _issue tracker: https://github.com/Zephrys/monica
 
-   :target: https://badge.fury.io/py/monica
-.. |image1| image:: http://i.imgur.com/mfJa6zi.jpg?1
-.. |image2| image:: http://i.imgur.com/D4iLyJw.gif?1
+.. |image0| image:: http://i.imgur.com/mfJa6zi.jpg?1
+.. |image1| image:: http://i.imgur.com/D4iLyJw.gif?1
