@@ -1,4 +1,5 @@
 # monica
+[![PyPI version](https://badge.fury.io/py/monica.svg)](https://badge.fury.io/py/monica)
 
 ![](http://i.imgur.com/mfJa6zi.jpg?1)
 
