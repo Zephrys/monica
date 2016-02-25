@@ -30,7 +30,7 @@ from config import flag
 from tabulate import tabulate
 import random
 
-__version__ = '0.0.9'
+__version__ = '0.1.0'
 headers = {'Accept' : 'application/json', 'user_key': config['api_key'], 'User-Agent': 'curl/7.35.0'}
 
 
